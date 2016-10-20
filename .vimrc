@@ -43,6 +43,8 @@ Plugin 'tpope/vim-surround'
 Plugin 'bufexplorer.zip'
 Plugin 'Conque-GDB'
 Plugin 'mru.vim'
+Plugin 'extradite.vim'
+
 Bundle 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 Bundle "gilligan/vim-lldb"
 
@@ -496,6 +498,8 @@ let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 let g:syntastic_cpp_compiler = 'clang++'
 let g:syntastic_cpp_compiler_options = ' -std=c++14 -stdlib=libc++'
+let g:syntastic_python_flake8_exec = 'python3'
+let g:syntastic_python_flake8_args = ['-m', 'flake8']
 
 let g:bufExplorerDisableDefaultKeyMapping = 1
 let g:bufExplorerDisableDefaultKeyMapping = 1
