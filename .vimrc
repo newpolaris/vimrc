@@ -154,9 +154,6 @@ let mapleader = ","
 let g:mapleader = ","
 
 " Fast save
-nmap <Leader>w :w<CR>
-nmap <Leader>2 :wq<CR>
-nmap <Leader>1 :q<CR>
 nmap <Leader>s :sp<CR>
 nmap <Leader>v :vs<CR>
 
@@ -506,3 +503,6 @@ let g:bufExplorerDisableDefaultKeyMapping = 1
 let g:bufExplorerDisableDefaultKeyMapping = 1
 
 let g:ycm_show_diagnostics_ui = 0
+
+map <Leader>P :let @+=expand("%:p")<CR>
+map <Leader>m :make<CR>
