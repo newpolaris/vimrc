@@ -504,5 +504,10 @@ let g:bufExplorerDisableDefaultKeyMapping = 1
 
 let g:ycm_show_diagnostics_ui = 0
 
+nmap cp :let @+=expand("%")<CR>
 map <Leader>P :let @+=expand("%:p")<CR>
 map <Leader>m :make<CR>
+
+" Ggrep arg to cw window
+command -nargs=+ Ggr execute 'silent Ggrep!' <q-args> | cw | redraw!
+
