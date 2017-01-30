@@ -1,5 +1,5 @@
 " ============================================================================
-" Maintained by newpolaris
+" newpolaris's vim
 "
 "---------------------------------------------- ----------------------
 set nocompatible              " be iMproved, required
@@ -44,6 +44,8 @@ Plugin 'bufexplorer.zip'
 Plugin 'Conque-GDB'
 Plugin 'mru.vim'
 Plugin 'extradite.vim'
+Plugin 'HerringtonDarkholme/vim-worksheet'
+Plugin 'newpolaris/cfparser.vim'
 
 Bundle 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 Bundle "gilligan/vim-lldb"
@@ -76,7 +78,7 @@ set guioptions-=m
 set guioptions-=T
 set ofu=syntaxcomplete#Complete
 set history=10000
-
+set autowrite
 set autoread
 set tabstop=4
 set shiftwidth=4
@@ -94,6 +96,9 @@ set ls=2
 
 " 줄 간격 설정
 set lsp=1
+
+" auto commenting disable
+" autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 
 " Is it correc the disabling backspace some word?
 set backspace=indent,eol,start
@@ -356,8 +361,8 @@ let g:fuf_keyOpenTabpage = '<CR>'
 " Move_cursor_by_display_lines_when_wrapping:
 "
 " http://vim.wikia.com/wiki/Move_cursor_by_display_lines_when_wrapping
-noremap <silent> <Leader>t :call ToggleWrap()<CR>
-function ToggleWrap()
+noremap <silent> <Leader>T :call ToggleWrap()<CR>
+function! ToggleWrap()
   if &wrap
     echo "Wrap OFF"
     setlocal nowrap
@@ -440,10 +445,10 @@ nnoremap <silent> <A-F8> :let &tags = &tags . ',' . expand("%:p:h") . "/tags"<CR
 " set environment dependent variable
 map <F7> :! g++ -g -pg -Wall -pthread -std=gnu++11 -O0 % -o %<.exe<CR>
 map <C-F7> :! gcc -g -pg -Wall % -o %<.exe -Ic:\Users\newpolaris/projects/gtest-1.5.0/include -Ic:/boost_1_43_0/ -Lc:\Users\newpolaris\projects\gtest-1.5.0\lib -lgtest -lstdc++  -std=gnu++11<CR>
-map <F9> :!g++ -o bin/%< % --std=c++14 -O2 && /usr/bin/time -l bin/%<
+map <F9> :!g++ -o bin/%< % --std=c++1z -O2 && /usr/bin/time -l bin/%<
 
-"set makeprg=g++\ -o\ bin/%<\ %\ --std=c++14
-set makeprg=g++\ -D\ _DEBUG\ -o\ bin/%<\ %\ -g\ --std=c++14\ &&\ bin/%<
+"set makeprg=g++\ -o\ bin/%<\ %\ --std=c++1z
+set makeprg=g++\ -D\ _DEBUG\ -o\ bin/%<\ %\ -g\ --std=c++1z
 
 map <A-F7> :! gcc -g -pg -Wall % -o %<.exe -Ic:\Users\newpolaris/projects/gtest-1.5.0/include -Ic:/boost_1_43_0/ -Lc:\Users\newpolaris\projects\gtest-1.5.0\lib -lgtest_main -lstdc++  -std=gnu++11<CR>
 " ----------------------------------------------------------------------------
@@ -502,12 +507,36 @@ let g:bufExplorerDisableDefaultKeyMapping = 1
 let g:bufExplorerDisableDefaultKeyMapping = 1
 let g:bufExplorerDisableDefaultKeyMapping = 1
 
+let g:syntastic_mode_map = { "mode": "active",
+                           \ "active_filetypes": [],
+                           \ "passive_filetypes": ["scala"] }
+
 let g:ycm_show_diagnostics_ui = 0
 
 nmap cp :let @+=expand("%")<CR>
 map <Leader>P :let @+=expand("%:p")<CR>
-map <Leader>m :make<CR>
+map <Leader>m :make &&\ bin/%<<CR>
 
 " Ggrep arg to cw window
 command -nargs=+ Ggr execute 'silent Ggrep!' <q-args> | cw | redraw!
 
+" cfparser.vim
+function! cfparser#CFTestAll()
+	make
+    echo system(printf("g++ --std=c++1z %s -o /tmp/cfparser_exec &&
+                        \cnt=0;
+                        \for i in `ls %s/%s?.in | sed 's/.in//'`; do
+                        \   let cnt++;
+                        \   echo \"\nTEST $cnt\";
+                     	\   /tmp/cfparser_exec < $i.in | diff -y - $i.out;
+						\   cmp -lb $i.out <(/tmp/cfparser_exec < $i.in);
+                        \done;
+                        \rm /tmp/cfparser_exec",
+        				\expand('%:p'), expand('%:p:h'), expand('%<')))
+endfunction
+
+function! cfparser#CFRun()
+    echo system(printf("g++ --std=c++1z %s -o /tmp/cfparser_exec", expand('%s:p')))
+    RunInInteractiveShell /tmp/cfparser_exec
+    call system("rm /tmp/cfparser_exec")
+endfunction
