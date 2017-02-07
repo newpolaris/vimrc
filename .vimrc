@@ -5,6 +5,8 @@
 set nocompatible              " be iMproved, required
 filetype off                  " required
 
+" e! ++enc=euc-kr
+
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
@@ -36,6 +38,7 @@ Plugin 'SearchCompl.vim'
 Plugin 'gitignore'
 Plugin 'fugitive.vim'
 Plugin 'airblade/vim-gitgutter'
+Plugin 'junegunn/gv.vim'
 " Plugin 'valloric/youcompleteme'
 Plugin 'scrooloose/syntastic'
 Plugin 'terryma/vim-multiple-cursors'
@@ -443,8 +446,9 @@ nnoremap <silent> <C-F8> :!cscope<CR> :cs kill 0<CR> :cs add cscope.out<CR>
 nnoremap <silent> <A-F8> :let &tags = &tags . ',' . expand("%:p:h") . "/tags"<CR>
 
 " set environment dependent variable
-map <F7> :! g++ -g -pg -Wall -pthread -std=gnu++11 -O0 % -o %<.exe<CR>
-map <C-F7> :! gcc -g -pg -Wall % -o %<.exe -Ic:\Users\newpolaris/projects/gtest-1.5.0/include -Ic:/boost_1_43_0/ -Lc:\Users\newpolaris\projects\gtest-1.5.0\lib -lgtest -lstdc++  -std=gnu++11<CR>
+" map <F7> :! g++ -g -pg -Wall -pthread -std=gnu++11 -O0 % -o %<.exe<CR>
+" map <C-F7> :! gcc -g -pg -Wall % -o %<.exe -Ic:\Users\newpolaris/projects/gtest-1.5.0/include -Ic:/boost_1_43_0/ -Lc:\Users\newpolaris\projects\gtest-1.5.0\lib -lgtest -lstdc++  -std=gnu++11<CR>
+map <F7> :!g++-mp-6 -g -pg -Wall -std=c++1z -O0 -D _DEBUG % -o bin/%<<CR>
 map <F9> :!g++ -o bin/%< % --std=c++1z -O2 && /usr/bin/time -l bin/%<
 
 "set makeprg=g++\ -o\ bin/%<\ %\ --std=c++1z
@@ -518,7 +522,7 @@ map <Leader>P :let @+=expand("%:p")<CR>
 map <Leader>m :make &&\ bin/%<<CR>
 
 " Ggrep arg to cw window
-command -nargs=+ Ggr execute 'silent Ggrep!' <q-args> | cw | redraw!
+command! -nargs=+ Ggr execute 'silent Ggrep!' <q-args> | cw | redraw!
 
 " cfparser.vim
 function! cfparser#CFTestAll()
@@ -526,8 +530,8 @@ function! cfparser#CFTestAll()
     echo system(printf("g++ --std=c++1z %s -o /tmp/cfparser_exec &&
                         \cnt=0;
                         \for i in `ls %s/%s?.in | sed 's/.in//'`; do
-                        \   let cnt++;
                         \   echo \"\nTEST $cnt\";
+                        \   let cnt++;
                      	\   /tmp/cfparser_exec < $i.in | diff -y - $i.out;
 						\   cmp -lb $i.out <(/tmp/cfparser_exec < $i.in);
                         \done;
