@@ -8,8 +8,13 @@ filetype off                  " required
 " e! ++enc=euc-kr
 
 " set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+if has('unix')
+	set rtp+=~/.vim/bundle/Vundle.vim
+	call vundle#begin()
+elseif has('win32') || has('win64')
+	set rtp+=$HOME/vimfiles/bundle/Vundle.vim/
+	call vundle#begin('$HOME/vimfiles/bundle/')
+endif
 " alternatively, pass a path where Vundle should install plugins
 "call vundle#begin('~/some/path/here')
 
@@ -94,10 +99,15 @@ set ignorecase
 " auto folding type indent
 set fdm=syntax
 
-" í•­ìƒ status ë¼ì¸ì„ í‘œì‹œí•˜ë„ë¡ í•¨
+" win10 bootcamp ±ÛÀÚÀÛ°Ô º¸ÀÌ´Â ¹®Á¦
+if has('win32') || has('win64')
+	set guifont=Consolas:h10:cANSI:qDRAFT
+endif
+
+" Ç×»ó status ¶óÀÎÀ» Ç¥½ÃÇÏµµ·Ï ÇÔ
 set ls=2
 
-" ì¤„ ê°„ê²© ì„¤ì •
+" ÁÙ °£°İ ¼³Á¤
 set lsp=1
 
 " auto commenting disable
@@ -134,13 +144,13 @@ filet plugin indent on
 " OPTIONAL: This enables automatic indentation as you type.
 filetype indent on
 
-set fileformat=unix
-set encoding=utf-8
-"if has("unix")
-"    set encoding=euc-kr
-"elseif has ("win32")
-"    set encoding=cp949
-"endif
+
+if has("unix")
+	set fileformat=unix
+	set encoding=utf-8
+elseif has ("win32")
+    set encoding=cp949
+endif
 
 " Don't work
 "" Change to the directory the file in your current buffer is in
@@ -297,20 +307,23 @@ let g:miniBufExplMaxSize = 2
 "
 colorscheme desert
 
-hi Pmenu guifg=#f6f3e8 guibg=#444444 gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
-hi PmenuSel guifg=#000000 guibg=#cae682 gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
-hi PmenuSbar guifg=black guibg=white gui=NONE ctermfg=black ctermbg=white cterm=NONE
+if has('unix')
+	hi Pmenu guifg=#f6f3e8 guibg=#444444 gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
+	hi PmenuSel guifg=#000000 guibg=#cae682 gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
+	hi PmenuSbar guifg=black guibg=white gui=NONE ctermfg=black ctermbg=white cterm=NONE
+elseif has('win32') || has('win64')
+	" status ¶óÀÎÀÌ ¾î¶»°Ô ³ª¿À°Ô ÇÒ Áö ÁöÁ¤
+	" type1:
+	set statusline=\%<%f%m\ %h%r%h%w%y%=%{\(&fenc==\"\"?&enc:&fenc).((exists(\"+bomb\")\ &&\ &bomb)?\",B\":\"\")}\ \ %<%4l:%3v%a\ \ [\ %p/\ %P]\ %a
+	" type2:
+	" set statusline=\%<%f\ %h%m%r\ \ %(%l:%c%V%)\ [%P]
+	" type3:
+	" set statusline=%<%f\|%m%r%h%y\ [%Y/%{&ff}/%{\(&fenc==\"\"?&enc:&fenc).((exists(\"+bomb\")\ &&\ &bomb)?\",B\":\"\")}]%=[%04l(%p%%\|%P),%04v\|\%03.3b,\%02.2B]
+	" type4:
+	" set statusline=\%<%F%h%m%r%h%w%y\ %{strftime(\"%Y/%m/%d-%H:%M\")}%=\ col:%c%V\ ascii:%b\ pos:%o\ lin:%l\,%L\ %P
+endif
 
-" status ë¼ì¸ì´ ì–´ë–»ê²Œ ë‚˜ì˜¤ê²Œ í•  ì§€ ì§€ì •
-" type1:
-" set statusline=\%<%f%m\ %h%r%h%w%y%=%{\(&fenc==\"\"?&enc:&fenc).((exists(\"+bomb\")\ &&\ &bomb)?\",B\":\"\")}\ \ %<%4l:%3v%a\ \ [\ %p/\ %P]\ %a
-" type2:
-" set statusline=\%<%f\ %h%m%r\ \ %(%l:%c%V%)\ [%P]
-" type3:
-" set statusline=%<%f\|%m%r%h%y\ [%Y/%{&ff}/%{\(&fenc==\"\"?&enc:&fenc).((exists(\"+bomb\")\ &&\ &bomb)?\",B\":\"\")}]%=[%04l(%p%%\|%P),%04v\|\%03.3b,\%02.2B]
-" type4:
-"set statusline=\%<%F%h%m%r%h%w%y\ %{strftime(\"%Y/%m/%d-%H:%M\")}%=\ col:%c%V\ ascii:%b\ pos:%o\ lin:%l\,%L\ %P
-"
+
 " ============================================================================
 
 " ============================================================================
@@ -335,18 +348,18 @@ au BufNewFile,BufRead *.fx setf fx
 " From web author kwon31xi
 let g:FuzzyFinderOptions = { 'Base':{}, 'Buffer':{}, 'File':{}, 'Dir':{}, 'MruFile':{}, 'MruCmd':{}, 'FavFile':{}, 'Tag':{}, 'TaggedFile':{}}
 
-" íŠ¹ì • íŒŒì¼ ì œì™¸
+" Æ¯Á¤ ÆÄÀÏ Á¦¿Ü
 let g:FuzzyFinderOptions.File.excluded_path = '\v\~$|\.o$|\.obj$|\.exe$|\.bak$|\.swp$|\.class$|\.settings$|CVS|((^|[/\\])\.[/\\]$)'
 
-" ëŒ€ì†Œë¬¸ì êµ¬ë¶„í•˜ê¸° (0 : ëŒ€ì†Œë¬¸ì êµ¬ë¶„, 1 : ëŒ€ì†Œë¬¸ì êµ¬ë¶„ ì•ˆí•¨)
+" ´ë¼Ò¹®ÀÚ ±¸ºĞÇÏ±â (0 : ´ë¼Ò¹®ÀÚ ±¸ºĞ, 1 : ´ë¼Ò¹®ÀÚ ±¸ºĞ ¾ÈÇÔ)
 let g:FuzzyFinderOptions.Base.ignore_case = 1
 
 " Find file in the current directory
 map <Leader>f <ESC>:FufFile<CR>
-" í˜„ì¬ ë””ë ‰í† ë¦¬ ì´í•˜ì—ì„œ íŒŒì¼ëª…ìœ¼ë¡œ ê²€ìƒ‰í•´ì„œ ì½ì–´ì˜¤ê¸°
+" ÇöÀç µğ·ºÅä¸® ÀÌÇÏ¿¡¼­ ÆÄÀÏ¸íÀ¸·Î °Ë»öÇØ¼­ ÀĞ¾î¿À±â
 map <Leader>F <ESC>:FufFile **/<CR>
 
-" ë²„í¼ ëª©ë¡ì—ì„œ ê²€ìƒ‰í•´ì„œ ì´ë™í•˜ê¸°
+" ¹öÆÛ ¸ñ·Ï¿¡¼­ °Ë»öÇØ¼­ ÀÌµ¿ÇÏ±â
 map <Leader>b <ESC>:FufBuffer<CR>
 
 " from author tokorom
