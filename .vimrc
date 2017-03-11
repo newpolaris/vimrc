@@ -465,7 +465,7 @@ map <F7> :!g++-mp-6 -g -pg -Wall -std=c++1z -O0 -D _DEBUG % -o bin/%<<CR>
 map <F9> :!g++ -o bin/%< % --std=c++1z -O2 && /usr/bin/time -l bin/%<
 
 "set makeprg=g++\ -o\ bin/%<\ %\ --std=c++1z
-set makeprg=g++\ -D\ _DEBUG\ -o\ bin/%<\ %\ -g\ --std=c++1z
+set makeprg=g++\ -D\ _DEBUG\ -o\ ./bin/%<\ %\ -g\ --std=c++1z
 
 map <A-F7> :! gcc -g -pg -Wall % -o %<.exe -Ic:\Users\newpolaris/projects/gtest-1.5.0/include -Ic:/boost_1_43_0/ -Lc:\Users\newpolaris\projects\gtest-1.5.0\lib -lgtest_main -lstdc++  -std=gnu++11<CR>
 " ----------------------------------------------------------------------------
@@ -538,7 +538,11 @@ let g:ycm_show_diagnostics_ui = 0
 
 nmap cp :let @+=expand("%")<CR>
 map <Leader>P :let @+=expand("%:p")<CR>
+if has('unix')
 map <Leader>m :make &&\ bin/%<<CR>
+else
+map <Leader>m :make<CR> :!.\bin\"%<"<CR>
+endif
 
 " Ggrep arg to cw window
 command! -nargs=+ Ggr execute 'silent Ggrep!' <q-args> | cw | redraw!
