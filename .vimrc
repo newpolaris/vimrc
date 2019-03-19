@@ -21,7 +21,7 @@ Plugin 'VundleVim/Vundle.vim'
 " plugin on GitHub repo
 Plugin 'tpope/vim-fugitive'
 " plugin from http://vim-scripts.org/vim/scripts.html
-Plugin 'L9'
+" Plugin 'L9'
 " Git plugin not hosted on GitHub
 Plugin 'git://git.wincent.com/command-t.git'
 " git repos on your local machine (i.e. when working on your own plugin)
@@ -31,7 +31,7 @@ Plugin 'git://git.wincent.com/command-t.git'
 Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 " Install L9 and avoid a Naming conflict if you've already installed a
 " different version somewhere else.
-Plugin 'ascenator/L9', {'name': 'newL9'}
+" Plugin 'ascenator/L9', {'name': 'newL9'}
 
 " Plugin 'minibufexpl.vim'
 Plugin 'SearchCompl.vim'
@@ -48,10 +48,7 @@ Plugin 'Conque-GDB'
 Plugin 'mru.vim'
 Plugin 'extradite.vim'
 Plugin 'HerringtonDarkholme/vim-worksheet'
-Plugin 'newpolaris/cfparser.vim'
-
 Bundle 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
-Bundle "gilligan/vim-lldb"
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -523,24 +520,3 @@ map <Leader>m :make &&\ bin/%<<CR>
 
 " Ggrep arg to cw window
 command! -nargs=+ Ggr execute 'silent Ggrep!' <q-args> | cw | redraw!
-
-" cfparser.vim
-function! cfparser#CFTestAll()
-	make
-    echo system(printf("g++ --std=c++1z %s -o /tmp/cfparser_exec &&
-                        \cnt=0;
-                        \for i in `ls %s/%s?.in | sed 's/.in//'`; do
-                        \   echo \"\nTEST $cnt\";
-                        \   let cnt++;
-                     	\   /tmp/cfparser_exec < $i.in | diff -y - $i.out;
-						\   cmp -lb $i.out <(/tmp/cfparser_exec < $i.in);
-                        \done;
-                        \rm /tmp/cfparser_exec",
-        				\expand('%:p'), expand('%:p:h'), expand('%<')))
-endfunction
-
-function! cfparser#CFRun()
-    echo system(printf("g++ --std=c++1z %s -o /tmp/cfparser_exec", expand('%s:p')))
-    RunInInteractiveShell /tmp/cfparser_exec
-    call system("rm /tmp/cfparser_exec")
-endfunction
