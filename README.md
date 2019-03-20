@@ -32,5 +32,7 @@ brew install macvim
 brew link --verwrite macvim
 cd /usr/local/bin/
 rm vim gvim vi vimdiff mvim gvim
-
+ln -s /Applications/MacVim.app/Contents/bin/vi vim
+ln -s /Applications/MacVim.app/Contents/bin/vim vim
+ln -s /Applications/MacVim.app/Contents/bin/gvim mvim
 ```
